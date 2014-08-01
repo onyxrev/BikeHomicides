@@ -19,5 +19,5 @@ twitter.keywordSearch(matchLib.nouns, function(tweet){
   database.storeTweet(tweet);
 
   // provide for some time for the tweet to propagate
-  _.delay(twitter.retweet, 10000, tweet);
+  _.delay(twitter.retweet.bind(twitter), 10000, tweet);
 });
