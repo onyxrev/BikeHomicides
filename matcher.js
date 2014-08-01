@@ -2,6 +2,7 @@ var _ = require('underscore');
 
 module.exports = {
   auxVerbs: [
+    "I",
     "nearly",
     "almost",
     "I'd",
