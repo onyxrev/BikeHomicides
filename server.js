@@ -14,7 +14,7 @@ console.log("Bike Homicide started. Searching for threats.");
 
 twitter.keywordSearch(matchLib.nouns, function(tweet){
   // if this isn't an interesting tweet just bail
-  if (!matchLib.doesTweetMatch(tweet.text, matcher)) return;
+  if (!matchLib.doesTweetMatch(tweet.text)) return;
 
   database.storeTweet(tweet);
 

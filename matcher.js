@@ -92,14 +92,14 @@ module.exports = {
     return _.flatten(phrases);
   },
 
-  doesTweetMatch: function(tweetBody, matcher){
+  doesTweetMatch: function(tweetBody){
     var lowercaseBody = tweetBody.toLowerCase();
 
-    return lowercaseBody.match(matcher) && // must match
-           !lowercaseBody.match(/rt @/);   // no retweets
+    return lowercaseBody.match(this.matcher()) && // must match
+           !lowercaseBody.match(/rt @/);          // no retweets
   },
 
   matcher: function(){
-    return new RegExp(this.aggressivePhrases().join("|"), "i");
+    return this._matcher = this._matcher || new RegExp(this.aggressivePhrases().join("|"), "i");
   }
 };
