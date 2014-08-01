@@ -92,6 +92,13 @@ module.exports = {
     return _.flatten(phrases);
   },
 
+  doesTweetMatch: function(tweetBody, matcher){
+    var lowercaseBody = tweetBody.toLowerCase();
+
+    return lowercaseBody.match(matcher) && // must match
+           !lowercaseBody.match(/rt @/);   // no retweets
+  },
+
   matcher: function(){
     return new RegExp(this.aggressivePhrases().join("|"), "i");
   }
