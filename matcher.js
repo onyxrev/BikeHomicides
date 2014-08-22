@@ -96,8 +96,8 @@ module.exports = {
   doesTweetMatch: function(tweetBody){
     var lowercaseBody = tweetBody.toLowerCase();
 
-    return lowercaseBody.match(this.matcher()) && // must match
-           !lowercaseBody.match(/rt @/);          // no retweets
+    return lowercaseBody.match(this.matcher()) &&   // must match
+           !lowercaseBody.match(/\b(rt|mt)\b ?@/i); // no retweets
   },
 
   matcher: function(){

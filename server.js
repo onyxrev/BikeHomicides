@@ -16,6 +16,8 @@ twitter.keywordSearch(matchLib.nouns, function(tweet){
   // if this isn't an interesting tweet just bail
   if (!matchLib.doesTweetMatch(tweet.text)) return;
 
+  console.log("Match '", tweet.text, "'");
+
   database.storeTweet(tweet);
 
   // provide for some time for the tweet to propagate
