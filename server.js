@@ -10,7 +10,7 @@ if (process.env.NODE_ENV === "production"){
   process.setuid("www");
 }
 
-console.log("Bike Homicide started. Searching for threats.");
+console.log("Bike Homicides started. Searching for threats.");
 
 twitter.keywordSearch(matchLib.nouns, function(tweet){
   // if this isn't an interesting tweet just bail
