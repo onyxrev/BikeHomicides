@@ -150,7 +150,7 @@ module.exports = {
   isTweetAQuote: function(tweetBody){
     var lowercaseBody = tweetBody.toLowerCase();
 
-    return lowercaseBody.match(/["|']@.*/);
+    return lowercaseBody.match(/["|'|“|”]@.*/);
   },
 
   doesTweetMatchAPhrase: function(tweetBody){
