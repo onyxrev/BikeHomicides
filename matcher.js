@@ -1,42 +1,6 @@
 var _ = require('underscore');
 
-var nouns = [
-  'bicycles',
-  'cyclists',
-  'bikers',
-  'bicyclist',
-  'bicyclists',
-  'on a bike',
-  'bicycle',
-  'cyclist',
-  'biker'
-];
-
-var verbs = [
-  'hit',
-  'run over',
-  'ran over',
-  'kill',
-  'killed',
-  'murdered',
-  'murder',
-  'snuff',
-  'eliminate',
-  'slay',
-  'assasinate',
-  'exterminate',
-  'squash',
-  'squashed',
-  'roadkill',
-  'squish',
-  'squished'
-];
-
-var articles = [
-  "the",
-  "an",
-  "a"
-];
+var dictionary = require('./dictionary');
 
 var regexpPhraseBuilder = function(){
   var args = _.toArray(arguments);
@@ -53,74 +17,60 @@ var regexpPhraseBuilder = function(){
     return arg;
   }).join(" ");
 
+  // optional matchers already take into account whitespace, so remove
+  // the extra space
+  string = string.replace(/(\\W\+\)\??) /g, "\$1");
+
   return new RegExp(string, "i");
 };
 
+var optionalMatcherBuilder = function(words, optional){
+  return [
+    "(?:(?:",
+    words.join("|"),
+    ")\\W+)",
+    optional ? "?" : ""
+  ].join("")
+};
+
 module.exports = {
-  auxVerbs: [
-    "I",
-    "nearly",
-    "almost",
-    "I'd",
-    "We'd",
-    "I'll",
-    'should',
-    "gonna",
-    "going to",
-    "wanna",
-    "want to",
-    'will',
-    'shoulda',
-    "would like to",
-    "need to",
-    "almost",
-    'just about'
-  ],
-
-  nouns: nouns,
-  verbs: verbs,
-
-  adverbMatcher: [
-    "(?:(?:",
-    [
-      "just",
-      "already",
-      "just now",
-      "lately",
-      "recently",
-      "once",
-      "really",
-      "could",
-      "would"
-    ].join("|"),
-    ")\\W+)"
-  ].join(""),
-
-  pronounMatcher: [
-    "(?:(?:",
-    [
-      "a",
-      "an",
-      "this",
-      "that",
-      "those",
-      "them"
-    ].join("|"),
-    ")\\W+)"
-  ].join(""),
+  adverbMatcher:    optionalMatcherBuilder(dictionary.adverbs),
+  pronounMatcher:   optionalMatcherBuilder(dictionary.pronouns),
+  swearWordMatcher: optionalMatcherBuilder(dictionary.swearWords),
+  fuckingMatcher:   optionalMatcherBuilder(dictionary.fucking),
 
   phraseMatchers: [
-    regexpPhraseBuilder(["drove", "drives"], "into", articles, nouns.concat("bike"), "lane"),
-    regexpPhraseBuilder(["taxicab", "taxi", "car", "bus", "truck", "semi", "motorcycle"], verbs, articles, nouns)
+    regexpPhraseBuilder(
+      ["drove", "drives"],             // drove
+      "into",                          // into
+      dictionary.articles,             // a
+      dictionary.nouns.concat("bike"), // bike
+      "lane"                           // lane
+    ),
+    regexpPhraseBuilder(
+      dictionary.motorVehicles,        // car
+      dictionary.verbs,                // ran over
+      dictionary.articles,             // a
+      dictionary.nouns                 // biker
+    ),
+    regexpPhraseBuilder(
+      dictionary.auxVerbs,                                 // I'll
+      optionalMatcherBuilder(dictionary.fucking, true),    // fucking
+      "run",                                               // run
+      optionalMatcherBuilder(dictionary.pronouns, true),   // these
+      optionalMatcherBuilder(dictionary.swearWords, true), // faggot
+      dictionary.nouns,                                    // cyclists
+      "over"                                               // over
+    ),
   ],
 
   aggressiveFragments: function(){
     var self = this;
 
-    var fragments = _.map(this.verbs, function(verb){
-      var murdererAction = ["\\b", self.adverbMatcher, "?", verb, "\\b\\W+", self.pronounMatcher, "?"].join("");
+    var fragments = _.map(dictionary.verbs, function(verb){
+      var murdererAction = ["\\b", self.fuckingMatcher, "?", self.adverbMatcher, "?", verb, "\\b\\W+", self.pronounMatcher, "?", self.swearWordMatcher, "?"].join("");
 
-      return _.map(self.nouns, function(noun){
+      return _.map(dictionary.nouns, function(noun){
         return [murdererAction, "\\b", noun, "\\b"].join("");
       });
     });
@@ -132,7 +82,7 @@ module.exports = {
     var self = this;
     var aggressiveFragments = this.aggressiveFragments();
 
-    var phrases = _.map(this.auxVerbs, function(auxVerb){
+    var phrases = _.map(dictionary.auxVerbs, function(auxVerb){
       return _.map(aggressiveFragments, function(aggressiveFragment){
         return ["\\b", auxVerb, "\\b\\W+", aggressiveFragment].join("");
       });
