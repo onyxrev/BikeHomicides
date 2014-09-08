@@ -21,7 +21,7 @@ var regexpPhraseBuilder = function(){
   // the extra space
   string = string.replace(/(\\W\+\)\??) /g, "\$1");
 
-  return new RegExp(string, "i");
+  return string;
 };
 
 var optionalMatcherBuilder = function(words, optional){
@@ -33,15 +33,17 @@ var optionalMatcherBuilder = function(words, optional){
   ].join("")
 };
 
-module.exports = {
-  adverbMatcher:    optionalMatcherBuilder(dictionary.adverbs),
-  pronounMatcher:   optionalMatcherBuilder(dictionary.pronouns),
-  swearWordMatcher: optionalMatcherBuilder(dictionary.swearWords),
-  fuckingMatcher:   optionalMatcherBuilder(dictionary.fucking),
+var matchers = {
+  adverbMatcher:    optionalMatcherBuilder(dictionary.adverbs,    true),
+  pronounMatcher:   optionalMatcherBuilder(dictionary.pronouns,   true),
+  swearWordMatcher: optionalMatcherBuilder(dictionary.swearWords, true),
+  fuckingMatcher:   optionalMatcherBuilder(dictionary.fucking,    true)
+};
 
-  phraseMatchers: [
+var phraseMatcher = (function(){
+  var phrases = [
     regexpPhraseBuilder(
-      ["drove", "drives"],             // drove
+      ["drove", "dive", "drives"],     // drove
       "into",                          // into
       dictionary.articles,             // a
       dictionary.nouns.concat("bike"), // bike
@@ -54,21 +56,25 @@ module.exports = {
       dictionary.nouns                 // biker
     ),
     regexpPhraseBuilder(
-      dictionary.auxVerbs,                                 // I'll
-      optionalMatcherBuilder(dictionary.fucking, true),    // fucking
-      "run",                                               // run
-      optionalMatcherBuilder(dictionary.pronouns, true),   // these
-      optionalMatcherBuilder(dictionary.swearWords, true), // faggot
-      dictionary.nouns,                                    // cyclists
-      "over"                                               // over
-    ),
-  ],
+      dictionary.auxVerbs,             // I'll
+      matchers.fuckingMatcher,         // fucking
+      "run",                           // run
+      matchers.pronounMatcher,         // these
+      matchers.swearWordMatcher,       // faggot
+      dictionary.nouns,                // cyclists
+      "over"                           // over
+    )
+  ];
 
+  return new RegExp(phrases.join("|"), "i");
+})();
+
+module.exports = {
   aggressiveFragments: function(){
     var self = this;
 
     var fragments = _.map(dictionary.verbs, function(verb){
-      var murdererAction = ["\\b", self.fuckingMatcher, "?", self.adverbMatcher, "?", verb, "\\b\\W+", self.pronounMatcher, "?", self.swearWordMatcher, "?"].join("");
+      var murdererAction = ["\\b", matchers.fuckingMatcher, matchers.adverbMatcher, matchers.fuckingMatcher, verb, "\\b\\W+", matchers.pronounMatcher, matchers.swearWordMatcher].join("");
 
       return _.map(dictionary.nouns, function(noun){
         return [murdererAction, "\\b", noun, "\\b"].join("");
@@ -106,9 +112,7 @@ module.exports = {
   doesTweetMatchAPhrase: function(tweetBody){
     var lowercaseBody = tweetBody.toLowerCase();
 
-    return _.find(this.phraseMatchers, function(phraseMatcher){
-      return tweetBody.match(phraseMatcher);
-    });
+    return tweetBody.match(phraseMatcher);
   },
 
   doesTweetMatchKeywords: function(tweetBody){

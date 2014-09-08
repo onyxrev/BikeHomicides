@@ -1,9 +1,10 @@
-var _        = require('underscore');
-var database = require('./database');
-var twitter  = require('./twitter');
-var matchLib = require('./matcher');
+var _          = require('underscore');
+var database   = require('./database');
+var twitter    = require('./twitter');
+var matchLib   = require('./matcher');
+var dictionary = require('./dictionary');
 
-var matcher  = matchLib.matcher();
+var matcher = matchLib.matcher();
 
 if (process.env.NODE_ENV === "production"){
   process.setgid("www");
@@ -12,7 +13,7 @@ if (process.env.NODE_ENV === "production"){
 
 console.log("Bike Homicides started. Searching for threats.");
 
-twitter.keywordSearch(matchLib.nouns, function(tweet){
+twitter.keywordSearch(dictionary.nouns, function(tweet){
   // if this isn't an interesting tweet just bail
   if (!matchLib.doesTweetMatch(tweet.text)) return;
 
