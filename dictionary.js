@@ -33,7 +33,8 @@ module.exports = {
     'squashed',
     'roadkill',
     'squish',
-    'squished'
+    'squished',
+    'shoot'
   ],
 
   articles: [
