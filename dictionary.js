@@ -31,7 +31,6 @@ module.exports = {
     'murder',
     'squash',
     'squashed',
-    'roadkill',
     'squish',
     'squished',
     'shoot'
