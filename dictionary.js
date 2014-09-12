@@ -33,7 +33,9 @@ module.exports = {
     'squashed',
     'squish',
     'squished',
-    'shoot'
+    'shoot',
+    'door',
+    'doored'
   ],
 
   articles: [
