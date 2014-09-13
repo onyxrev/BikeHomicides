@@ -56,6 +56,16 @@ var phraseMatcher = (function(){
       dictionary.nouns                 // biker
     ),
     regexpPhraseBuilder(
+      ["door", "doored"],              // doored
+      dictionary.articles,             // a
+      dictionary.nouns                 // cyclist
+    ),
+    regexpPhraseBuilder(
+      dictionary.nouns,                // cyclist
+      dictionary.linkingVerbs,         // got
+      ["door", "doored"]               // doored
+    ),
+    regexpPhraseBuilder(
       dictionary.auxVerbs,             // I'll
       matchers.fuckingMatcher,         // fucking
       "run",                           // run

@@ -38,6 +38,15 @@ module.exports = {
     'doored'
   ],
 
+  linkingVerbs: [
+    "was",
+    "got",
+    "is",
+    "has been",
+    "is",
+    "am"
+  ],
+
   articles: [
     "the",
     "an",
