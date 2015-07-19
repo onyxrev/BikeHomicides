@@ -79,6 +79,16 @@ var phraseMatcher = (function(){
   return new RegExp(phrases.join("|"), "i");
 })();
 
+var innocuousPhrases = (function(){
+  var phrases = [
+    regexpPhraseBuilder(
+      "bicycle", "kick"
+    )
+  ];
+
+  return new RegExp(phrases.join("|"), "i");
+})();
+
 module.exports = {
   aggressiveFragments: function(){
     var self = this;
@@ -119,6 +129,12 @@ module.exports = {
     return lowercaseBody.match(/["|'|“|”]@.*/);
   },
 
+  isTweetInnocuous: function(tweetBody){
+    var lowercaseBody = tweetBody.toLowerCase();
+
+    return lowercaseBody.match(innocuousPhrases);
+  },
+
   doesTweetMatchAPhrase: function(tweetBody){
     var lowercaseBody = tweetBody.toLowerCase();
 
@@ -133,8 +149,9 @@ module.exports = {
 
   doesTweetMatch: function(tweetBody){
     // we aren't interested in retweeting retweets or quotes
-    if (this.isTweetARetweet(tweetBody)) return false;
-    if (this.isTweetAQuote(tweetBody))   return false;
+    if (this.isTweetARetweet(tweetBody))  return false;
+    if (this.isTweetAQuote(tweetBody))    return false;
+    if (this.isTweetInnocuous(tweetBody)) return false;
 
     if (this.doesTweetMatchAPhrase(tweetBody))  return true;
     if (this.doesTweetMatchKeywords(tweetBody)) return true;

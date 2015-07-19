@@ -18,7 +18,11 @@ module.exports = {
     "bus",
     "truck",
     "semi",
-    "motorcycle"
+    "motorcycle",
+    "motorist",
+    "driver",
+    "trucker",
+    "cabby"
   ],
 
   verbs: [
@@ -62,6 +66,7 @@ module.exports = {
     "going to",
     "wanna",
     "want to",
+    "love to",
     'will',
     "would like to",
     "need to",
