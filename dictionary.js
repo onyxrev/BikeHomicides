@@ -22,7 +22,7 @@ module.exports = {
     "motorist",
     "driver",
     "trucker",
-    "cabby"
+    "cabbie"
   ],
 
   verbs: [
