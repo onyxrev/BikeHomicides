@@ -39,7 +39,11 @@ module.exports = {
     'squished',
     'shoot',
     'door',
-    'doored'
+    'doored',
+    'assaulted',
+    'assault',
+    'chased',
+    'chase'
   ],
 
   linkingVerbs: [
